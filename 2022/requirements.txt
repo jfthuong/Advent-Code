@@ -1,0 +1,3 @@
+pandas
+jupyter
+advent-of-code-data

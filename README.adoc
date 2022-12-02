@@ -1,0 +1,20 @@
+# Challenges to prepare for 🎄
+
+Meaning of Emojis used in the tables
+
+* 🥷: Happy with the result
+* 👨‍🏭: Still need to improve it
+* 👩‍🦯: A bit lost but kind of working
+* 🤷‍♂️: I don't know what to do
+
+## Year 2022
+
+.coding for year 2022
+[cols="1, 1, 1"]
+|===
+| Day | Python | Rust
+| `01` | 🥷 | 🥷
+| `02` |  |
+|===
+
+

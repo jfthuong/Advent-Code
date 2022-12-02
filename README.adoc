@@ -1,20 +1,35 @@
-# Challenges to prepare for 🎄
+= Challenges to prepare for 🎄
+:author: Jeff Thuong
+:icons: font
+
 
 Meaning of Emojis used in the tables
 
 * 🥷: Happy with the result
 * 👨‍🏭: Still need to improve it
+    (or find alternate better way)
 * 👩‍🦯: A bit lost but kind of working
 * 🤷‍♂️: I don't know what to do
+* 🧘‍♀️: Waiting for the challenge
 
-## Year 2022
+NOTE: I just started learning Rust so solution in Python
+will be more elegant to the one in Rust (if even solved in Rust)
+
+== Year 2022
+
+Python solutions are in
+link:2022/Solve_Puzzles.ipynb[Jupyter Notebook]
+
+Rust Solutions are in dedicated files: `2022/rust/pb_<day>.rs`
+
+TIP: Click on the icon in the "Rust" column below to open the file with implementation in Rust.
 
 .coding for year 2022
 [cols="1, 1, 1"]
 |===
 | Day | Python | Rust
-| `01` | 🥷 | 🥷
-| `02` |  |
+| `01` | 🥷 | link:2022/rust/pb_01.rs[🥷]
+| `02` | 🧘‍♀️ | 🧘‍♀️
 |===
 
 

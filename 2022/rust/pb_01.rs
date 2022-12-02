@@ -1,30 +1,36 @@
 use std::fs;
 
 const INPUT_PATH: &str = "../inputs/01_calories.txt";
+const EOL_DOUBLE: &str = "\r\n\r\n";  // We are using Windows line endings
 
 fn main() {
-    let contents = fs::read_to_string(INPUT_PATH).expect("Cannot read input file");
+    let contents = fs::read_to_string(INPUT_PATH).expect("Should be readable input file");
     let mut calories: Vec<i32> = contents
-        // let calories: Vec<Vec<&str>> = contents
-        .split("\r\n\r\n")
+        .split(EOL_DOUBLE)
         .map(|block| {
             block
                 .trim()
-                .split("\r\n")
+                .lines()
                 .map(|line| line.parse::<i32>().expect("Should be a number"))
                 .sum()
         })
         .collect();
 
-    println!("Calories #0: {:?}", calories[0]);
+        println!("Calories #0: {:?}", calories[0]);
 
-    // Maximum value
-    let max = calories.iter().max().expect("Should have a max value");
-    println!("Max: {}", max);
-
-    // Sum of top 3 values
     calories.sort();
     calories.reverse();
+
+    // Maximum value
+    let max = calories[0];
+    println!("-- Max: {max}");
+
+    // Sum of top 3 values
     let sum = calories[0] + calories[1] + calories[2];
-    println!("Sum of top 3: {}", sum);
+    println!("-- Sum of top 3: {sum}");
+
+    // We check that results are the same as in Python
+    assert_eq!(max, 69693);
+    assert_eq!(sum, 200945);
+
 }

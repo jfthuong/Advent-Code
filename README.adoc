@@ -11,6 +11,7 @@ Meaning of Emojis used in the tables
 * 👩‍🦯: A bit lost but kind of working
 * 🤷‍♂️: I don't know what to do
 * 🧘‍♀️: Waiting for the challenge
+* 😴: Not done yet
 
 NOTE: I just started learning Rust so solution in Python
 will be more elegant to the one in Rust (if even solved in Rust)
@@ -29,7 +30,9 @@ TIP: Click on the icon in the "Rust" column below to open the file with implemen
 |===
 | Day | Python | Rust
 | `01` | 🥷 | link:2022/rust/pb_01.rs[🥷]
-| `02` | 🧘‍♀️ | 🧘‍♀️
+| `02` | 🥷 | 😴
+| `03` | 🥷 | 😴
+| `04` | 🥷 | 😴
 |===
 
 

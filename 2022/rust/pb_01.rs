@@ -1,6 +1,6 @@
 use std::fs;
 
-const INPUT_PATH: &str = "../inputs/01_calories.txt";
+const INPUT_PATH: &str = "../inputs/01.txt";
 const EOL_DOUBLE: &str = "\r\n\r\n";  // We are using Windows line endings
 
 fn main() {

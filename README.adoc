@@ -30,9 +30,13 @@ TIP: Click on the icon in the "Rust" column below to open the file with implemen
 |===
 | Day | Python | Rust
 | `01` | 🥷 | link:2022/rust/pb_01.rs[🥷]
-| `02` | 🥷 | 😴
+| `02` | 🥷 | link:2022/rust/pb_02.rs[👨‍🏭]
 | `03` | 🥷 | 😴
 | `04` | 🥷 | 😴
+| `05` | 🥷 | 😴
+| `06` | 🥷 | 😴
+| `07` | 🥷 | 😴
+| `08` | 🥷 | 😴
 |===
 
 

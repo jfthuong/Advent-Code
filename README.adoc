@@ -37,6 +37,9 @@ TIP: Click on the icon in the "Rust" column below to open the file with implemen
 | `06` | 🥷 | 😴
 | `07` | 🥷 | 😴
 | `08` | 🥷 | 😴
+| `09` | 🥷 | 😴
+| `10` | 👨‍🏭 | 😴
+| `11` | 🥷 | 😴
 |===
 
 

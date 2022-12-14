@@ -21,6 +21,9 @@ will be more elegant to the one in Rust (if even solved in Rust)
 Python solutions are in
 link:2022/Solve_Puzzles.ipynb[Jupyter Notebook]
 
+Also available as nicely formatted Jupyter Notebook
+link:https://nbviewer.org/github/jfthuong/Advent-Code/blob/main/2022/Solve_Puzzles.ipynb[with nbviewer]
+
 Rust Solutions are in dedicated files: `2022/rust/pb_<day>.rs`
 
 TIP: Click on the icon in the "Rust" column below to open the file with implementation in Rust.
@@ -38,9 +41,11 @@ TIP: Click on the icon in the "Rust" column below to open the file with implemen
 | `07` | 🥷 | 😴
 | `08` | 🥷 | 😴
 | `09` | 🥷 | 😴
-| `10` | 👨‍🏭 | 😴
+| `10` | 👨‍🏭 (there is a bug) | 😴
 | `11` | 🥷 | 😴
 | `12` | 🥷 | 😴
+| `13` | 🥷 | 😴
+| `14` | 👨‍🏭 (a bit slow) | 😴
 |===
 
 

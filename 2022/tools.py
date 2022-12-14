@@ -11,6 +11,7 @@ from typing import (
     Generic,
     List,
     Literal,
+    NamedTuple,
     Optional,
     Tuple,
     TypeVar,
@@ -26,14 +27,11 @@ import numpy.typing as npt  # type: ignore
 from IPython import get_ipython  # type: ignore
 from IPython.core.display import display  # type: ignore
 from IPython.core.interactiveshell import InteractiveShell  # type: ignore
-from IPython.core.magic import (
-    register_line_cell_magic,  # type: ignore
-    register_line_magic,
-)
+from IPython.core.magic import register_line_cell_magic  # type: ignore
+from IPython.core.magic import register_line_magic
 from matplotlib.colors import ListedColormap
-import matplotlib.pyplot as plt
 from PIL import Image
-
+from typing_extensions import Self
 
 T = TypeVar("T")
 Y = TypeVar("Y")
@@ -227,6 +225,59 @@ GridFuncOpt = Optional[GridFunc[T, Any]]
 SelectStartEnd = Union[str, int, float, GridFunc[T, bool]]
 
 
+class Point(NamedTuple):
+    x: float
+    y: float
+
+    def __add__(self, other: Self) -> Self:
+        return Point(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other: Self) -> Self:
+        return Point(self.x - other.x, self.y - other.y)
+
+    def __mul__(self, other: float) -> Self:
+        return Point(self.x * other, self.y * other)
+
+    def __rmul__(self, other: float) -> Self:
+        return self * other
+
+    def __truediv__(self, other: float) -> Self:
+        return Point(self.x / other, self.y / other)
+
+    def __floordiv__(self, other: int) -> Self:
+        return Point(self.x // other, self.y // other)
+
+    def __neg__(self) -> Self:
+        return Point(-self.x, -self.y)
+
+
+class Point3D(NamedTuple):
+    x: float
+    y: float
+    z: float
+
+    def __add__(self, other: Self) -> Self:
+        return Point3D(self.x + other.x, self.y + other.y, self.z + other.z)
+
+    def __sub__(self, other: Self) -> Self:
+        return Point3D(self.x - other.x, self.y - other.y, self.z - other.z)
+
+    def __mul__(self, other: float) -> Self:
+        return Point3D(self.x * other, self.y * other, self.z * other)
+
+    def __rmul__(self, other: float) -> Self:
+        return self * other
+
+    def __truediv__(self, other: float) -> Self:
+        return Point3D(self.x / other, self.y / other, self.z / other)
+
+    def __floordiv__(self, other: int) -> Self:
+        return Point3D(self.x // other, self.y // other, self.z // other)
+
+    def __neg__(self) -> Self:
+        return Point3D(-self.x, -self.y, -self.z)
+
+
 class Grid(Generic[T]):
     """Class for manipulation of Grids, stored as numpy arrays
 
@@ -376,6 +427,14 @@ class GridWithNetwork(Grid):
         assert isinstance(self.graph, nx.DiGraph), "Graph is not directed"
         return self.graph.successors(*args, **kwargs)
 
+    def get_neighbors(self, pos: Pos) -> List[Pos]:
+        """Get neighbors of a position"""
+        width, height = self.data.shape
+        x, y = pos
+
+        neighbors = [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+        return [n for n in neighbors if 0 <= n[0] < width and 0 <= n[1] < height]
+
     def build_graph(
         self,
         edge_func: Callable[[T, int, int, T, int, int], bool],
@@ -396,13 +455,6 @@ class GridWithNetwork(Grid):
             with_original: Whether to use the data from original grid (default: False)
         """
         data = self.data if with_original else self.encoded
-        width, height = data.shape
-
-        def get_neighbors(pos: Pos) -> List[Pos]:
-            """Get neighbors of a position"""
-            x, y = pos
-            neighbors = [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
-            return [n for n in neighbors if 0 <= n[0] < width and 0 <= n[1] < height]
 
         for pos, val in np.ndenumerate(data):
             pos = cast(Pos, pos)
@@ -411,7 +463,7 @@ class GridWithNetwork(Grid):
             label = self.data[pos]  # we use the original name
             # print(f"Adding node {pos} with label {label} and color {color}")
             self.graph.add_node(pos, label=label, color=color)
-            for neighbor in get_neighbors(pos):
+            for neighbor in self.get_neighbors(pos):
                 if edge_func(val, i, j, data[neighbor], *neighbor):
                     self.graph.add_edge(pos, neighbor)
 

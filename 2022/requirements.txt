@@ -1,3 +1,8 @@
+typing-extensions
+networkx
+PIL
+numpy
+matplotlib
 pandas
 jupyter
 advent-of-code-data

@@ -98,9 +98,9 @@ def get_daily_input(line: str) -> None:
 def split_data(
     data: str,
     *,
-    by_pairs: Literal[True],
+    by_tuple: Literal[True],
     safe_eval: Literal[True],
-) -> List[Tuple[Any, Any]]:
+) -> List[Tuple[Any, ...]]:
     ...
 
 
@@ -117,9 +117,9 @@ def split_data(
 def split_data(
     data: str,
     *,
-    by_pairs: Literal[True],
+    by_tuple: Literal[True],
     safe_eval: Literal[False],
-) -> List[Tuple[str, str]]:
+) -> List[Tuple[str, ...]]:
     ...
 
 
@@ -135,27 +135,38 @@ def split_data(data: str) -> List[str]:
 
 def split_data(
     data: str,
-    separator: str = "\n",
+    separator: Optional[str] = None,
     strip: bool = True,
     skip_empty: bool = True,
-    by_pairs: bool = False,
+    tuple_separator: str = "\n",
+    by_tuple: bool = False,
     safe_eval: bool = False,
 ) -> List[Any]:
-    """Split the data into a list of lines or pairs of lines"""
+    """Split the data into a list of lines or pairs of lines
+
+    Args:
+        separator: separator between each data (default: \\n for line return)
+        strip: whether to strip the spaces around initial data (default: True)
+        skip_empty: skip empty lines (default: True)
+        tuple_separator: separator to split the blocks (default: \\n\\n)
+        by_tuple: cut by blocks (by default using separator of an empty line)
+            and return a tuple for element split by tuple_separator (default: False)
+        safe_eval: try to interpolate the data (integer, list, etc.) (default: False)
+    """
     if strip:
         data = data.strip()
 
-    if by_pairs and separator == "\n":
-        separator = "\n\n"
+    if separator is None:
+        separator = "\n\n" if by_tuple else "\n"
 
     blocks = data.split(separator)
 
     if skip_empty:
         blocks = [b for b in blocks if b.strip()]
 
-    if by_pairs:
+    if by_tuple:
         return [
-            tuple(literal_eval(e) if safe_eval else e for e in b.splitlines())
+            tuple(literal_eval(e) if safe_eval else e for e in b.split(tuple_separator))
             for b in blocks
         ]
 
@@ -226,8 +237,8 @@ SelectStartEnd = Union[str, int, float, GridFunc[T, bool]]
 
 
 class Point(NamedTuple):
-    x: float
-    y: float
+    x: int
+    y: int
 
     def __add__(self, other: Self) -> Self:
         return Point(self.x + other.x, self.y + other.y)
@@ -235,14 +246,14 @@ class Point(NamedTuple):
     def __sub__(self, other: Self) -> Self:
         return Point(self.x - other.x, self.y - other.y)
 
-    def __mul__(self, other: float) -> Self:
+    def __mul__(self, other: int) -> Self:  # type: ignore
         return Point(self.x * other, self.y * other)
 
-    def __rmul__(self, other: float) -> Self:
+    def __rmul__(self, other: int) -> Self:  # type: ignore
         return self * other
 
     def __truediv__(self, other: float) -> Self:
-        return Point(self.x / other, self.y / other)
+        raise TypeError("Cannot divide a point by a float")
 
     def __floordiv__(self, other: int) -> Self:
         return Point(self.x // other, self.y // other)

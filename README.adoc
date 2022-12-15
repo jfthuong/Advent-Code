@@ -46,6 +46,7 @@ TIP: Click on the icon in the "Rust" column below to open the file with implemen
 | `12` | 🥷 | 😴
 | `13` | 🥷 | 😴
 | `14` | 👨‍🏭 (a bit slow) | 😴
+| `15` | 👩‍🦯 (harder) | 😴
 |===
 
 

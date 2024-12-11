@@ -285,55 +285,84 @@ SelectStartEnd = Union[str, int, float, GridFunc[T, bool]]
 
 
 class Point(NamedTuple):
+    """Representaiton of a 2D point with integer coordinates"""
+
     x: int
     y: int
 
-    def __add__(self, other: Self) -> Self:
+    def __add__(self, other: Point) -> Point:  # type: ignore
+        """Translate the point with `Point + Point`"""
         return Point(self.x + other.x, self.y + other.y)
 
-    def __sub__(self, other: Self) -> Self:
+    def __sub__(self, other: Point) -> Point:
+        """Translate the point with `Point - Point`"""
         return Point(self.x - other.x, self.y - other.y)
 
-    def __mul__(self, other: int) -> Self:  # type: ignore
+    def __mul__(self, other: int) -> Point:  # type: ignore
+        """Multiply dimensions by using `Point * int`"""
         return Point(self.x * other, self.y * other)
 
-    def __rmul__(self, other: int) -> Self:  # type: ignore
+    def __rmul__(self, other: int) -> Point:  # type: ignore
+        """Multiply dimensions by using `int * Point`"""
         return self * other
 
-    def __truediv__(self, other: float) -> Self:
+    def __truediv__(self, other: float) -> Point:
+        """Forbidden operation of `Point / float`"""
         raise TypeError("Cannot divide a point by a float")
 
-    def __floordiv__(self, other: int) -> Self:
+    def __floordiv__(self, other: int) -> Point:
+        """Divide dimensions by using `Point // int`"""
         return Point(self.x // other, self.y // other)
 
-    def __neg__(self) -> Self:
+    def __neg__(self) -> Point:
+        """Get the opposite of the point with `-Point`"""
         return Point(-self.x, -self.y)
+
+    def neighbors(self, diagonal: bool = False) -> list[Point]:
+        """Get the list of surrounding positions"""
+        positions: list[Point] = []
+        for dx, dy in product([-1, 0, 1], repeat=2):
+            if dx == dy == 0:
+                continue
+            if not diagonal and dx * dy != 0:
+                continue
+            positions.append(self + Point(dx, dy))
+        return positions
 
 
 class Point3D(NamedTuple):
+    """Representation of a 3D point with float coordinates"""
+
     x: float
     y: float
     z: float
 
-    def __add__(self, other: Self) -> Self:
+    def __add__(self, other: Point3D) -> Point3D:  # type: ignore
+        """Translate the point with `Point3D + Point3D`"""
         return Point3D(self.x + other.x, self.y + other.y, self.z + other.z)
 
-    def __sub__(self, other: Self) -> Self:
+    def __sub__(self, other: Point3D) -> Point3D:
+        """Translate the point with `Point3D - Point3D`"""
         return Point3D(self.x - other.x, self.y - other.y, self.z - other.z)
 
-    def __mul__(self, other: float) -> Self:
+    def __mul__(self, other: float) -> Point3D:  # type: ignore
+        """Multiply dimensions by using `Point3D * float`"""
         return Point3D(self.x * other, self.y * other, self.z * other)
 
-    def __rmul__(self, other: float) -> Self:
+    def __rmul__(self, other: float) -> Point3D:  # type: ignore
+        """Multiply dimensions by using `float * Point3D`"""
         return self * other
 
-    def __truediv__(self, other: float) -> Self:
+    def __truediv__(self, other: float) -> Point3D:
+        """Divide dimensions by using `Point3D / float`"""
         return Point3D(self.x / other, self.y / other, self.z / other)
 
-    def __floordiv__(self, other: int) -> Self:
+    def __floordiv__(self, other: int) -> Point3D:
+        """Divide dimensions by using `Point3D // int`"""
         return Point3D(self.x // other, self.y // other, self.z // other)
 
-    def __neg__(self) -> Self:
+    def __neg__(self) -> Point3D:
+        """Get the opposite of the point with `-Point3D`"""
         return Point3D(-self.x, -self.y, -self.z)
 
 
@@ -348,14 +377,44 @@ class Grid(Generic[T]):
             * the column index
     """
 
-    def __init__(self, data: str, func: GridFuncOpt[T] = None) -> None:
-        self.data: npt.NDArray[np.str_] = np.array(
-            [list(r) for r in split_data(data)], dtype=np.str_
-        )
+    def __init__(
+        self, data: Union[str, npt.NDArray[np.str_]], func: GridFuncOpt[T] = None
+    ) -> None:
+        if isinstance(data, str):
+            self.data: npt.NDArray[np.str_] = np.array(
+                [list(r) for r in split_data(data)], dtype=np.str_
+            )
+        else:
+            self.data = data
         self.encoded: GridAny = self.apply(func) if func else self.data
 
     def __repr__(self) -> str:
         return str(self.data)
+
+    def __getitem__(self, pos: Union[Pos, Point]) -> T:
+        """Access a given point with `grid[(x, y)]`"""
+        return self.data[pos]
+
+    def __setitem__(self, pos: Union[Pos, Point], value: T) -> None:
+        """Set a given point with `grid[(x, y)] = value`"""
+        self.data[pos] = value
+
+    def __contains__(self, point: Union[Pos, Point]) -> bool:
+        """Check a point is inside the grid with `Point(x, y) in grid`"""
+        point = Point(*point)
+        return 0 <= point.x < self.data.shape[0] and 0 <= point.y < self.data.shape[1]
+
+    def copy(self) -> Grid[T]:
+        """Get a copy of the grid"""
+        copied_grid: Grid[T] = Grid(self.data.copy())
+        copied_grid.encoded = self.encoded.copy()
+        return copied_grid
+
+    @classmethod
+    def from_char(cls, character: str, width: int, height: int) -> "Grid":
+        """Create a grid with a single character"""
+        data = np.full((width, height), character)
+        return cls(data, func=None)
 
     def apply(self, func: GridFunc[T, Any]) -> GridAny:
         """Apply a function to each element of the array and the coordinates
@@ -419,6 +478,15 @@ class Grid(Generic[T]):
                 aspect="auto",
                 cmap=ListedColormap(["#00000000", overlay_color]),  # type: ignore
             )
+
+    def find(self, pattern: str) -> list[Point]:
+        """find all the points matching a given pattern"""
+        width, height = self.data.shape
+        return [
+            Point(i, j)
+            for i, j in product(range(width), range(height))
+            if self.data[i, j] == pattern
+        ]
 
     def find_pattern(
         self,

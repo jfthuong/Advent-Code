@@ -49,4 +49,35 @@ TIP: Click on the icon in the "Rust" column below to open the file with implemen
 | `15` | 👩‍🦯 (harder) | 😴
 |===
 
+== Year 2024
+
+Python solutions are in
+link:2024/Solve_Puzzles.ipynb[Jupyter Notebook]
+
+Also available as nicely formatted Jupyter Notebook
+link:https://nbviewer.org/github/jfthuong/Advent-Code/blob/main/2024/Solve_Puzzles.ipynb[with nbviewer]
+
+
+.coding for year 2024
+[cols="1, 1, 1"]
+|===
+| Day | Python | Scade One
+| `01` | 🥷 |
+| `02` | 🥷 | 
+| `03` | 🥷 | 
+| `04` | 🥷 | 
+| `05` |    | 
+| `06` |    | 
+| `07` |    | 
+| `08` |    | 
+| `09` |    | 
+| `10` |    |
+| `11` |    |
+| `12` |    |
+| `13` |    |
+| `14` |    |
+| `15` |    }
+|===
+
+
 
